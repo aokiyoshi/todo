@@ -8,6 +8,7 @@ class TodoTest(APITestCase):
         '''
         Ensure we can create a new todos object.
         '''
+       
         data = {
             'title': 'do the homework',
             'text': 'Dont forget about smoke tests',

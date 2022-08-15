@@ -5,4 +5,4 @@ from .models import Todo
 class TodoModelSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = Todo
-        fields = ('title', 'text',)
+        fields = ('title', 'text', 'user', 'project')
