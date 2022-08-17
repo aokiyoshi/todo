@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from project.views import ProjectViewSet
-from todos.views import TodoModelViewSet
+from todos.views import TodoModelViewSet, TodoFilteredByProjectView
 from users.views import UserModelViewSet
 
 router = DefaultRouter()
@@ -29,4 +29,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
+    path('api/todos/filter/<str:project_name>/', TodoFilteredByProjectView.as_view()),
 ]
