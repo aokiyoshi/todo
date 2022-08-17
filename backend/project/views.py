@@ -1,8 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
-from .models import Project
-from .serializers import ProjectModelSerializer
-from .paginators import ProjectLimitOffsetPagination
+
 from .filters import ProjectFilter
+from .models import Project
+from .paginators import ProjectLimitOffsetPagination
+from .serializers import ProjectModelSerializer
+
 
 class ProjectViewSet(ModelViewSet):
     pagination_class = ProjectLimitOffsetPagination
