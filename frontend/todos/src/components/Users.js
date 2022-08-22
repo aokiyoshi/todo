@@ -1,54 +1,48 @@
 import React from 'react'
 
 
-function TodoItem({todo}) {
+function UserItem({user}) {
     return (
         <tr>
             <td>
-                {todo.title}
+                {user.username}
             </td>
             <td>
-                {todo.text}
+                {user.first_name}
             </td>
             <td>
-                {todo.user}
+                {user.last_name}
             </td>
             <td>
-                {todo.project}
-            </td>
-            <td>
-                {todo.status}
+                {user.email}
             </td>
         </tr> 
     )
 }
 
 
-function TodoList({todos}) {
+function UserList({users}) {
     return (
         <table class="pure-table">
             <thead>
                 <th>
-                    Title
+                    Username
                 </th>
                 <th>
-                    Text
+                    Frist Name
                 </th>
                 <th>
-                    User
+                    Last Name
                 </th>
                 <th>
-                    Project
-                </th>
-                <th>
-                    Status
+                    Email
                 </th>
             </thead>
             <tbody>
-                {todos.map((item) => <TodoItem todo={item} />)}
+                {users.map((item) => <UserItem user={item} />)}
             </tbody>
         </table>
     )
 }
 
-export default TodoList
+export default UserList
