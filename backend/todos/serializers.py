@@ -3,6 +3,8 @@ from .models import Todo
 
 
 class TodoModelSerializer(HyperlinkedModelSerializer):
+    user = SlugField()
+    project = SlugField()
 
     class Meta:
         model = Todo
