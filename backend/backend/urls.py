@@ -19,6 +19,7 @@ from rest_framework.routers import DefaultRouter
 from project.views import ProjectViewSet
 from todos.views import TodoModelViewSet, TodoFilteredByProjectView
 from users.views import UserModelViewSet
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = DefaultRouter()
 router.register('todos', TodoModelViewSet)
@@ -30,4 +31,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
     path('api/todos/filter/<str:project_name>/', TodoFilteredByProjectView.as_view()),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]

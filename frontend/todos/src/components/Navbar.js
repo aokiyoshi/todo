@@ -1,11 +1,14 @@
 import React from 'react'
 import {Link} from "react-router-dom"
 
-function Navbar() {
+function Navbar({is_login, _logout}) {
+
     return (
         
         <div class="pure-menu pure-menu-horizontal">
-            <a href="/" class="pure-menu-heading pure-menu-link">TODOS</a>
+            <Link to="/" class="pure-menu-heading pure-menu-link">
+                        TODOS
+            </Link>
             <ul class="pure-menu-list">
                 <li class="pure-menu-item">
                     <Link to="/" class="pure-button">
@@ -27,6 +30,20 @@ function Navbar() {
                         Wrong Link
                     </Link>
                 </li>
+                {!is_login &&
+                <li class="pure-menu-item">
+                    <Link to="/login" class="pure-button">
+                        Войти
+                    </Link>
+                </li>
+                }
+                {is_login &&
+                    <li class="pure-menu-item" >
+                        <a href="/login" onClick={_logout} class="pure-button">
+                            Выйти
+                        </a>
+                    </li>
+                }
             </ul>
         </div>
     )
