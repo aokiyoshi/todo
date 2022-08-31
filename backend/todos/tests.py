@@ -1,21 +1,47 @@
+from mixer.backend.django import mixer
+
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import  APIClient
+from django.test import TestCase
 
 from .models import Todo
+from users.models import User
+from project.models import Project
 
-class TodoTest(APITestCase):
-    def test_create_todos(self):
-        '''
-        Ensure we can create a new todos object.
-        '''
-       
-        data = {
-            'title': 'do the homework',
-            'text': 'Dont forget about smoke tests',
-        }
-        response = self.client.post('/api/todos/', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Todo.objects.count(), 1)
-        self.assertEqual(Todo.objects.get().title, 'do the homework')
-        self.assertEqual(Todo.objects.get().text, 'Dont forget about smoke tests')
-        
+
+class TodoTest(TestCase):
+    
+    def test_get_object(self):
+        """
+        Тестирование чтения конкретного Todo
+        Сначала создается пользователь, проект и заметка (todo)
+        Потом проверяется запрос на чтение по id
+        """
+        admin = User.objects.create_superuser(
+            'admin', 'admin@admin.com', 'admin123456')
+        _project = Project.objects.create(
+            title = 'test project',
+            repo = 'test',
+        )
+        todo = Todo.objects.create(
+            title = 'test',
+            text = 'lorem ipsum',
+            user = admin,
+            project = _project,
+        )
+        client = APIClient()
+        client.force_authenticate(admin)
+        response = client.get(f'/api/todos/{todo.id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_object(self):
+        """
+        Тестирование чтения объекта, созданного через миксер
+        """
+        admin = User.objects.create_superuser(
+            'admin', 'admin@admin.com', 'admin123456')
+        self.client.force_login(admin)
+        todo = mixer.blend(Todo)
+        response = self.client.get(f'/api/todos/{todo.id}/')
+        print(f'{response.data=}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
