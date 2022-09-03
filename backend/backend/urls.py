@@ -15,21 +15,32 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
 from project.views import ProjectViewSet
-from todos.views import TodoModelViewSet, TodoFilteredByProjectView
-from users.views import UserModelViewSet
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework.routers import DefaultRouter
+from todos.views import TodoFilteredByProjectView, TodoModelViewSet
+from users.views import UserModelViewSet
 
+from doc_schema import schema_view
+
+
+# Router 
 router = DefaultRouter()
 router.register('todos', TodoModelViewSet)
 router.register('users', UserModelViewSet)
 router.register('projects', ProjectViewSet)
 
+
+# Url patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
-    path('api/todos/filter/<str:project_name>/', TodoFilteredByProjectView.as_view()),
+    path('api/todos/filter/<str:project_name>/',
+         TodoFilteredByProjectView.as_view()),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('swagger/', schema_view.with_ui('swagger',
+         cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc',
+         cache_timeout=0), name='schema-redoc'),
 ]
