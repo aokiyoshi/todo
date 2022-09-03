@@ -1,16 +1,15 @@
-from mixer.backend.django import mixer
-
-from rest_framework import status
-from rest_framework.test import  APIClient
 from django.test import TestCase
+from mixer.backend.django import mixer
+from project.models import Project
+from rest_framework import status
+from rest_framework.test import APIClient
+from users.models import User
 
 from .models import Todo
-from users.models import User
-from project.models import Project
 
 
 class TodoTest(TestCase):
-    
+
     def test_get_object(self):
         """
         Тестирование чтения конкретного Todo
@@ -20,14 +19,14 @@ class TodoTest(TestCase):
         admin = User.objects.create_superuser(
             'admin', 'admin@admin.com', 'admin123456')
         _project = Project.objects.create(
-            title = 'test project',
-            repo = 'test',
+            title='test project',
+            repo='test',
         )
         todo = Todo.objects.create(
-            title = 'test',
-            text = 'lorem ipsum',
-            user = admin,
-            project = _project,
+            title='test',
+            text='lorem ipsum',
+            user=admin,
+            project=_project,
         )
         client = APIClient()
         client.force_authenticate(admin)
