@@ -15,14 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from graphene_django.views import GraphQLView
 from project.views import ProjectViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
 from todos.views import TodoFilteredByProjectView, TodoModelViewSet
 from users.views import UserModelViewSet
 
-from doc_schema import schema_view
-
+from .doc_schema import schema_view
 
 # Router 
 router = DefaultRouter()
@@ -33,14 +33,26 @@ router.register('projects', ProjectViewSet)
 
 # Url patterns
 urlpatterns = [
+    # Admin
     path('admin/', admin.site.urls),
+    
+    # Auth
     path('api-auth/', include('rest_framework.urls')),
+
+    # API
     path('api/', include(router.urls)),
     path('api/todos/filter/<str:project_name>/',
          TodoFilteredByProjectView.as_view()),
+
+    # Token
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+
+    # Docs
     path('swagger/', schema_view.with_ui('swagger',
          cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc',
          cache_timeout=0), name='schema-redoc'),
+
+    #GraphQL
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
 ]
