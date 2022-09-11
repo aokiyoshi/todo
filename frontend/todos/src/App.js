@@ -10,7 +10,8 @@ import ProjectList from './components/Projects';
 import UserList from './components/Users';
 import NotFound from './components/NotFound';
 import LoginForm from './components/Auth';
-
+import ProjectForm from './components/ProjectForm';
+import TodoForm from './components/TodoForm';
 
 import {
   BrowserRouter as Router,
@@ -75,7 +76,7 @@ class App extends React.Component {
               'todos': response.data.results
             }
           )
-    }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
 
     axios.get('http://127.0.0.1:8000/api/projects', {headers})
         .then(response => {
@@ -93,7 +94,7 @@ class App extends React.Component {
               'users': response.data.results
             }
           )
-    }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
 
   }
   
@@ -113,16 +114,71 @@ class App extends React.Component {
     this.get_token_from_storage()
   }
 
+  deleteTodo(id) {
+    const headers = this.get_headers();
+    axios.delete(`http://127.0.0.1:8000/api/todos/${id}`, {headers})
+      .then(response => {
+        this.setState({todos: this.state.todos.filter((item) => item.id !== id)})
+      }).catch(error => console.log(error))
+  }
+
+  deleteProject(id){
+    const headers = this.get_headers();
+    axios.delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers})
+      .then(response => {
+        this.setState({projects: this.state.projects.filter((item) => item.id !== id)})
+      }).catch(error => console.log(error))
+  }
+
+  createProject(title, repo, users){
+    const headers = this.get_headers();
+    const data = {
+      title: title,
+      repo: repo,
+      users: users
+    }
+    axios.post('http://127.0.0.1:8000/api/projects/', data, {headers})
+  }
+
+  createTodo(title, text, user, project) {
+    const headers = this.get_headers();
+    const data = {
+      title: title,
+      text: text,
+      user: user,
+      project: project
+    }
+    axios.post('http://127.0.0.1:8000/api/todos/', data, {headers})
+  }
+
   render() {
     return (
       <div class="center">
         <Router>
           <Navbar is_login={this.is_authenticated()} _logout={() => this.logout()} />
           <Routes>
-            <Route exact path="/" element={<TodoList todos={this.state.todos} />} />
-            <Route exact path="/projects" element={<ProjectList projects={this.state.projects} />} />
+            {/* Руты */}
+            {/* Заметки */}
+            <Route exact path="/" element={<TodoList todos={this.state.todos}  deleteTodo={(id)=>this.deleteTodo(id)}/>} />
+
+            <Route exact path="/todos/create" 
+              element={<TodoForm users={this.state.users} projects={this.state.projects}
+              createTodo={(title, text, user, project) => this.createTodo(title, text, user, project)}/>} />
+
+            {/* Проекты */}
+            <Route exact path="/projects" element={<ProjectList projects={this.state.projects} deleteProject={(id) => this.deleteProject(id)}/>} />
+
+            <Route exact path="/projects/create" 
+              element={<ProjectForm users={this.state.users} 
+              createProject={(title, repo, users) => this.createProject(title, repo, users)}/>} />
+
+            {/* Пользователи */}
             <Route exact path="/users" element={<UserList users={this.state.users} />} />
+
+            {/* Логин */}
             <Route exact path="/login" element={<LoginForm get_token={(username, password) => this.get_token(username, password)}/>}/>
+
+            {/* 404 */}
             <Route path="*" element={<NotFound/>}/>
           </Routes>
         </Router>
@@ -130,7 +186,6 @@ class App extends React.Component {
     )
   }
 }
-
 
 
 export default App;
